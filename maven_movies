@@ -1,0 +1,77 @@
+mavenmovies database working with mysql queries
+
+######################################################################################################################################################
+
+CREATE database mavenmovies;
+
+use mavenmovies;
+
+show tables;
+
+######################################################################################################################################################
+
+1)Write a SQL query to count the number of characters except the spaces for each actor. Return first 10 actors name length along with their name.
+SELECT * from actor;
+
+SELECT *,concat(first_name," ",last_name) as full_name from actor limit 10;
+
+SELECT actor_id, CONCAT(first_name," ",last_name) as full_name, LENGTH(CONCAT(first_name, last_name)) as length_name FROM actor limit 10;
+
+######################################################################################################################################################
+
+2) List all Oscar awardees(Actors who received Oscar award) with their full names and length of their names.
+SELECT * from actor_award;
+
+SELECT actor_award_id,awards, CONCAT(first_name," ",last_name) as fullName,length(concat(first_name,last_name)) as length from actor_award WHERE awards="Oscar";
+
+select *,length(first_name) as LEN from actor_award where awards like '%oscar%';
+
+######################################################################################################################################################
+
+3) Find the actors who have acted in the film ‘Frost Head’.
+SELECT * from actor; SELECT * from film; SELECT * from film_actor;
+
+SELECT first_name,last_name from actor inner join film on actor.actor_id=film.film_id WHERE title="frost Head";
+
+select first_name,last_name from film inner join film_actor on film.film_id=film_actor.film_id inner join actor on actor.actor_id=film_actor.actor_id where title='Front Head';
+
+SELECT first_name,last_name,title from actor inner join film on actor.actor_id=film.film_id WHERE title="frost Head";
+
+select a.actor_id,concat(a.first_name,' ',a.last_name) as full_Name,title from actor a inner join film_actor fa on a.actor_id=fa.actor_id inner join film f on fa.film_id=f.film_id where f.title='frost head';
+
+########################################################################################################################################################
+
+4) Pull all the films acted by the actor ‘Will Wilson’.
+SELECT * from actor; SELECT * from film; select * from film_list;
+
+SELECT title from film inner join actor on film.film_id=actor.actor_id where actor.first_name="Wil" and actor.last_name="Wilson";
+
+SELECT title,film_id from film inner join actor on film.film_id=actor.actor_id where actor.first_name="Wil" and actor.last_name="Wilson";
+
+SELECT a.actor_id,a.film_id,b.first_name,b.last_name,c.title FROM film_actor as a join actor as b on a.actor_id=b.actor_id join film as c on a.film-id=c.film_id where first_name='wil' and last_name='wilson';
+
+select a.actor_id,title,first_name,last_name from actor a join film_actor fa on a.actor_id=fa.actor_id join film f on fa.film_id=f.film_id where a.first_name='wil' and last_name='wilson';
+
+#########################################################################################################################################################
+
+5) Pull all the films which were rented and return in the month of May.
+SELECT * from rental; SELECT * from film;
+
+select title,rental_date,return_date from rental r inner join film f on r.rental_id=f.film_id;
+
+select a.inventory_id,a.film_id,b.rental_date,b.return_date,c.title from inventory as a inner join rental as b on a.inventory_id=b.inventory_id inner join film as c on a.film_id=c.film_id where monthname(rental_date) like '%may%' and monthname(return_date) like '%may%';
+
+###########################################################################################################################################################
+
+6) Pull all the films with ‘Comedy’ category.
+SELECT * from film_category; SELECT * from category; SELECT * from film;
+
+SELECT title,category from film_list join film_category USING (film_id) inner join category USING (category_id) order by film_id = 'Comedy';
+
+SELECT fid,title,category from film_list where category like "%comedy";
+
+select a.category_id,a.film_id,b.name,c.title from film_category as a inner join category as b on a.category_id = b.category_id inner join film as c on a.film_id=c.film_id where name='comedy';
+
+select film.title,category.name from category cross join film where name='comedy';
+
+############################################################################################################################################################
